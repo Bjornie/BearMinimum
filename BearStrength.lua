@@ -9,8 +9,14 @@ BearStrength = {
 
 local BS = BearStrength
 
+local function InitiateCCEvents()
+  EVENT_MANAGER:RegisterForEvent(BS.name .. "Feared", EVENT_COMBAT_EVENT, Feared)
+  EVENT_MANAGER:AddFilter
+
 local function Initialise()
   BS.SavedVariables = ZO_SavedVars:NewAccountWide(BS.svName, BS.svVersion, nil, BS.Default)
+
+  InitiateCCEvents()
 
   BS.BuildMenu()
 end
