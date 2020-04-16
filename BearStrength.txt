@@ -1,0 +1,8 @@
+## Title: Bear Strength
+## Version 1.0.0
+## APIVersion: 100030
+## Author: |c00BFFFBjørnTheBurr|r
+## SavedVariables: BearStrengthSV
+
+BearStrength.lua
+BearStrengthMenu.lua
