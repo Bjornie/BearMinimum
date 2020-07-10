@@ -3,6 +3,8 @@
 ## APIVersion: 100030
 ## Author: |c00BFFFBjørnTheBurr|r
 ## SavedVariables: BearStrengthSV
+## DependsOn: LibAddonMenu-2.0
 
 BearStrength.lua
+BearStrength.xml
 BearStrengthMenu.lua
