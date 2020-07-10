@@ -5,6 +5,7 @@ BearStrength = {
   svVersion = 1,
 
   Default = {
+    isAccountWide = true,
     isFoodEnabled = true,
     FoodReminderInterval = 60,
     FoodReminderThreshold = 10,
@@ -82,6 +83,11 @@ end
 
 local function Initialise()
   BS.SavedVariables = ZO_SavedVars:NewAccountWide(BS.svName, BS.svVersion, nil, BS.Default)
+
+  if not BS.SavedVariables.isAccountWide then
+    BS.SavedVariables = ZO_SavedVars:NewCharacterIdSettings(BS.svName, BS.svVersion, nil, BS.Default)
+    BS.SavedVariables.isAccountWide = false
+  end
 
   --InitiateCCEvents()
   BS.BuildMenu()

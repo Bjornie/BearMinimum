@@ -17,6 +17,13 @@ function BS.BuildMenu()
     },
     {
       type = "checkbox",
+      name = "Account-Wide Settings",
+      getFunc = function() return BearStrengthSV.Default[GetDisplayName()]["$AccountWide"].isAccountWide end,
+      setFunc = function(value) BearStrengthSV.Default[GetDisplayName()]["$AccountWide"].isAccountWide = value end,
+      requiresReload = true,
+    },
+    {
+      type = "checkbox",
       name = "Food Reminder",
       width = "half",
       getFunc = function() return BS.SavedVariables.isFoodEnabled end,
