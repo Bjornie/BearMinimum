@@ -11,6 +11,8 @@ local breathTimerControl = BearStrengthBreath:GetNamedChild("Timer")
 
 local beamTimerControl = BearStrengthBeam:GetNamedChild("Timer")
 local tombTimerControl = BearStengthTomb:GetNamedChild("Timer")
+local personATimerControl = BearStrengthTomb:GetNamedChild("PersonATimer")
+local personBTimerControl = BearStrengthTomb:GetNamedChild("PersonBTimer")
 
 local currentIce = 0
 local frozenPrison = 116025
@@ -38,13 +40,35 @@ local function Breath(_, result, _, abilityName, _, _, _, _, _, _, _, _, _, _, _
     --]]
 end
 
+-- Timer for when Frozen Prison will explode
+local function PrisonCountdown()
+    if personATimerControl:GetText() ~= "0.0" then personATimerControl:SetText(string.format("%.1f", tonumber(personATimerControl:GetText()) - 0.1))
+    elseif personBTimerControl:GetText() ~= "0.0" then personBTimerControl:SetText(string.format("%.1f", tonumber(personBTimerControl:GetText()) - 0.1)) end
+
+    if personATimerControl:GetText() == "0.0" or personBTimerControl:GetText() == "0.0" then BearStrengthTomb:SetHidden(true) end
+end
+
+-- endtime == seconds or gametime? Possibly endTime - beginTime
 -- Triggered when someone enters and leaves a Frozen Tomb
-local function SecondIceReady(_, changeType)
-    if changeType == EFFECT_RESULT_FADED and BearStengthTomb:GetNamedChild("PersonB"):GetText() == "Tomb B: Wait" then
-        BearStengthTomb:GetNamedChild("PersonB"):SetText("Tomb B: Safe")
-    elseif changeType == EFFECT_RESULT_GAINED and BearStrengthTomb:GetNamedChild("PersonB"):GetText() == "Tomb B: Safe" then
-        BearStengthTomb:SetHidden(true)
-        EVENT_MANAGER:UnregisterForEvent(S.name .. "IceB")
+local function FrozenPrison(_, changeType, _, _, _, beginTime, endTime)
+    -- Person A enters a Frozen Tomb
+    if changeType == EFFECT_RESULT_GAINED and personATimerControl:GetText() == "Safe" then
+        personATimerControl:SetText(endTime)
+        EVENT_MANAGER:RegisterForUpdate(S.name .. "PrisonCountdown", 100, PrisonCountdown)
+    -- Person A leaves the Frozen Tomb
+    elseif changeType == EFFECT_RESULT_FADED and personBTimerControl:GetText() == "Wait" then
+        BearStrengthTomb:GetNamedChild("PersonALabel"):SetColor(150, 150, 150, 0.7)
+        personATimerControl:SetText("")
+        personBTimerControl:SetText("Safe")
+        EVENT_MANAGER:UnregisterForUpdate(S.name .. "PrisonCountdown")
+    -- Person B enters a Frozen Tomb
+    elseif changeType == EFFECT_RESULT_GAINED and personBTimerControl:GetText() == "Safe" then
+        personBTimerControl:SetText(endTime)
+        EVENT_MANAGER:RegisterForUpdate(S.name .. "PrisonCountdown", 100, PrisonCountdown)
+    -- Person B leaves the Frozen Tomb
+    else
+        BearStrengthTomb:SetHidden(true)
+        EVENT_MANAGER:UnregisterForUpdate(S.name .. "PrisonCountdown")
     end
 end
 
@@ -65,19 +89,19 @@ local function FrozenTomb(_, result, _, abilityName, _, _, _, _, _, _, _, _, _, 
     d("abilityName: " .. abilityName)
     d("abilityId: " .. abilityId)
 
-    --[[
+    ---[[
     currentIce = currentIce % 3 + 1
 
-    BearStengthTomb:SetHidden(false)
-    BearStengthTomb:GetNamedChild("Label"):SetText("Frozen Tomb " .. currentIce .. ": ")
-    BearStengthTomb:GetNamedChild("Timer"):SetText("Spawning")
-    BearStengthTomb:GetNamedChild("PersonATimer"):SetText("Safe")
-    BearStengthTomb:GetNamedChild("PersonBTimer"):SetText("Wait")
+    BearStrengthTomb:SetHidden(false)
+    BearStrengthTomb:GetNamedChild("Label"):SetText("Frozen Tomb " .. currentIce .. ": ")
+    tombTimerControl:SetText("Spawning")
+    personATimerControl:SetText("Safe")
+    personBTimerControl:SetText("Wait")
     zo_callLater(function()
         tombTimerControl:SetText("10.0")
-        EVENT_MANAGER:RegisterForUpdate(S.name .. "Tomb", 100, TombCountdown)
-        EVENT_MANAGER:RegisterForEvent(S.name .. "IceB", EVENT_EFFECT_CHANGED, SecondIceReady)
-        EVENT_MANAGER:AddFilterForEvent(S.name .. "IceB", EVENT_EFFECT_CHANGED, REGISTER_FILTER_ABILITY_ID, frozenPrison)
+        EVENT_MANAGER:RegisterForUpdate(S.name .. "TombCountdown", 100, TombCountdown)
+        EVENT_MANAGER:RegisterForEvent(S.name .. "FrozenPrison", EVENT_EFFECT_CHANGED, FrozenPrison)
+        EVENT_MANAGER:AddFilterForEvent(S.name .. "FrozenPrison", EVENT_EFFECT_CHANGED, REGISTER_FILTER_ABILITY_ID, frozenPrison)
     end, 4000)
     --]]
 end
