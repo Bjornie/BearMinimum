@@ -6,15 +6,10 @@ BearStrength = {
 
     Default = {
         isAccountWide = true,
-        isFoodEnabled = true,
-        FoodReminderInterval = 60,
-        FoodReminderThreshold = 10,
     },
 }
 
 local BS = BearStrength
-
-local noFood = true
 
 local function Feared(eventCode, result, isError, abilityName, abilityGraphic, abilityActionSlotType, sourceName, sourceType, targetName, targetType, hitValue, powerType, damageType, log, sourceUnitId, targetUnitId, abilityId, overflow)
     BearStrengthFeared:SetHidden(false)
@@ -58,29 +53,6 @@ local function InitiateCCEvents()
     EVENT_MANAGER:AddFilterForEvent(BS.name .. "Stunned", EVENT_COMBAT_EVENT, REGISTER_FILTER_COMBAT_RESULT, ACTION_RESULT_STUNNED)
 end
 
--- Lure Allure - 107748
-local function FoodReminder()
-    noFood = true
-
-    if GetNumBuffs("player") > 0 then
-        for i = 1, GetNumBuffs("player") do
-            local _, _, finish, _, _, _, _, _, _, _, abilityId = GetUnitBuffInfo("player", i)
-            if abilityId == 107748 then
-                noFood = false
-
-                local buffFoodRemaining = finish - GetGameTimeMilliseconds() / 1000
-                local formattedTime = ZO_FormatTime(buffFoodRemaining, TIME_FORMAT_STYLE_COLONS, TIME_FORMAT_PRECISION_SECONDS)
-
-                if buffFoodRemaining <= (BS.SavedVariables.FoodReminderThreshold * 60) then
-                    d("|c00BFFFYour food buff is expiring in: |r" .. formattedTime)
-                end
-            end
-        end
-    end
-
-    if noFood then d("|cFF0000You have no food buff!|r") end
-end
-
 local function Initialise()
     BS.SavedVariables = ZO_SavedVars:NewAccountWide(BS.svName, BS.svVersion, nil, BS.Default)
 
@@ -91,8 +63,6 @@ local function Initialise()
 
     --InitiateCCEvents()
     BS.BuildMenu()
-
-    EVENT_MANAGER:RegisterForUpdate(BS.name .. "Food", BS.SavedVariables.FoodReminderInterval * 1000, FoodReminder)
 end
 
 local function OnAddonLoaded(_, addonName)
