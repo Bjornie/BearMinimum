@@ -5,7 +5,7 @@ function BS.BuildMenu()
     type = "panel",
     name = "Bear Strength",
     displayname = "Bear Strength",
-    author = "|c00BFFFBjørnTheBurr|r",
+    author = "|c00BFFFBjørn|r",
     version = BS.version,
     registerForRefresh = true,
   }
