@@ -1,6 +1,6 @@
 ## Title: Bear Strength
 ## Version: 0.1.1
-## APIVersion: 100032
+## APIVersion: 100033
 ## Author: |c00BFFFBjørn|r
 ## SavedVariables: BearStrengthSV
 ## DependsOn: LibAddonMenu-2.0
