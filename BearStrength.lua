@@ -4,7 +4,7 @@ BearStrength = {
     svName = "BearStrengthSV",
     svVersion = 1,
 
-    Default = {
+    defaults = {
         isAccountWide = true,
     },
 }
@@ -54,10 +54,10 @@ local function InitiateCCEvents()
 end
 
 local function Initialise()
-    BS.SavedVariables = ZO_SavedVars:NewAccountWide(BS.svName, BS.svVersion, nil, BS.Default)
+    BS.SavedVariables = ZO_SavedVars:NewAccountWide(BS.svName, BS.svVersion, nil, BS.defaults)
 
     if not BS.SavedVariables.isAccountWide then
-        BS.SavedVariables = ZO_SavedVars:NewCharacterIdSettings(BS.svName, BS.svVersion, nil, BS.Default)
+        BS.SavedVariables = ZO_SavedVars:NewCharacterIdSettings(BS.svName, BS.svVersion, nil, BS.defaults)
         BS.SavedVariables.isAccountWide = false
     end
 

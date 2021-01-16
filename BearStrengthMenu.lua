@@ -1,7 +1,7 @@
 local BS = BearStrength
 
 function BS.BuildMenu()
-  local PanelData = {
+  local panelData = {
     type = "panel",
     name = "Bear Strength",
     displayname = "Bear Strength",
@@ -10,7 +10,7 @@ function BS.BuildMenu()
     registerForRefresh = true,
   }
 
-  local OptionsTable = {
+  local optionsTable = {
     {
       type = "header",
       name = "|cFFFACDGeneral|r",
@@ -24,6 +24,6 @@ function BS.BuildMenu()
     },
   }
 
-  LibAddonMenu2:RegisterAddonPanel(BS.name, PanelData)
-  LibAddonMenu2:RegisterOptionControls(BS.name, OptionsTable)
+  LibAddonMenu2:RegisterAddonPanel(BS.name, panelData)
+  LibAddonMenu2:RegisterOptionControls(BS.name, optionsTable)
 end
