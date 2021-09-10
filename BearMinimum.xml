@@ -1,0 +1,92 @@
+<GuiXml>
+    <Animations>
+        <AnimationTimeline name="BearMinimum_NotificationAnimations">
+            <Animations>
+                <TranslateAnimation deltaYFromEnd="-100" duration="800">
+                    <EasingFunction>
+                        return ZO_EaseOutQuadratic(progress)
+                    </EasingFunction>
+                </TranslateAnimation>
+                <AlphaAnimation duration="500" endAlpha="1" startAlpha="0" />
+                <AlphaAnimation delay="3500" duration="500" endAlpha="0" startAlpha="1" />
+            </Animations>
+        </AnimationTimeline>
+
+        <AnimationTimeline name="BearMinimum_NotificationSlide">
+            <Animations>
+                <TranslateAnimation duration="800">
+                    <EasingFunction>
+                        return ZO_EaseOutQuadratic(progress)
+                    </EasingFunction>
+                </TranslateAnimation>
+            </Animations>
+        </AnimationTimeline>
+
+        <AnimationTimeline name="BearMinimum_AlertAnimation">
+            <Animations>
+                <SizeAnimation endHeight="50" endWidth="250" startHeight="50" />
+            </Animations>
+        </AnimationTimeline>
+    </Animations>
+
+    <Controls>
+        <Control name="BearMinimum_StatusPanelTemplateControl" hidden="true" virtual="true">
+            <Controls>
+                <Label name="$(parent)_Name" color="FFFFFF" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick">
+                    <Anchor point="TOPLEFT" />
+                    <Dimensions x="300" />
+                </Label>
+                <Label name="$(parent)_Timer" color="FFFFFF" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick">
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$(parent)_Name" offsetX="40" />
+                </Label>
+            </Controls>
+        </Control>
+
+        <TopLevelControl name="BearMinimum_StatusPanel" clampedToScreen="true" hidden="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
+            <Anchor point="TOPLEFT" offsetX="100" offsetY="100" />
+            <Controls>
+                <Label name="$(parent)_Header" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick" text="|c00BFFFBear Minimum|r |cFFFACDStatus Panel|r">
+                    <Anchor point="TOPLEFT" />
+                </Label>
+                <Texture name="$(parent)_Divider" textureFile="esoui/art/miscellaneous/horizontaldivider_dynamic.dds">
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$(parent)_Header" offsetY="-4" />
+                    <Dimensions x="340" y="8" />
+                </Texture>
+            </Controls>
+        </TopLevelControl>
+
+        <Label name="BearMinimum_NotificationTemplateControl" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick" hidden="true" virtual="true" />
+
+        <TopLevelControl name="BearMinimum_Notifications" clampedToScreen="true" hidden="false" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
+            <Anchor point="TOP" offsetY="200" />
+        </TopLevelControl>
+
+        <Control name="BearMinimum_Alert" hidden="false" virtual="true">
+            <Controls>
+                <Label name="$(parent)_Name" color="FFFFFF" font="esoui/common/fonts/Univers67.otf|20|shadow">
+                    <Anchor point="TOPLEFT" />
+                </Label>
+                <Backdrop name="$(parent)_Background" centerColor="80000000" layer="0">
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$(parent)_Name" />
+                    <Dimensions x="250" y="50" />
+                </Backdrop>
+                <Backdrop name="$(parent)_Border" centerColor="00000000" edgeColor="FFFFFF" layer="2">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)_Background" />
+                    <Dimensions x="250" y="50" />
+                    <Edge edgeSize="1px" />
+                </Backdrop>
+                <Backdrop name="$(parent)_Line" centerColor="FFFFFF" layer="2">
+                    <Dimensions x="2" y="50" />
+                </Backdrop>
+                <Backdrop name="$(parent)_Colour" layer="1">
+                    <Anchor point="LEFT" relativeTo="$(parent)_Background" />
+                    <Dimensions x="0" y="50" />
+                </Backdrop>
+            </Controls>
+        </Control>
+
+        <TopLevelControl name="BearMinimum_Alerts" clampedToScreen="true" hidden="false" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
+            <Anchor point="CENTER" offsetY="-100" />
+        </TopLevelControl>
+    </Controls>
+</GuiXml>
