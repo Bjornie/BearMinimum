@@ -14,6 +14,4 @@ BearMinimum.lua
 BearMinimum.xml
 BearMinimumMenu.lua
 
-Modules/Trials/AetherianArchive.lua
-
 Test.lua

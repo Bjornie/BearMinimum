@@ -1,36 +1,38 @@
-BearMinimum = {
-    name = 'BearMinimum',
-    version = '0.1.0',
-    svName = 'BearMinimumSV',
-    svVersion = 1,
+if not BearMinimum then BearMinimum = {} end
+local BM = BearMinimum
 
-    defaults =  {
-        isAccountWide = true,
-        alertDodgeColour = {1, 1, 0, 1},
-        alertBlockColour = {1, 0, 0, 1},
+BM.name = 'BearMinimum'
+BM.version = '0.1.0'
+BM.svName = 'BearMinimumSV'
+BM.svVersion = 1
 
-        AetherianArchive = {
-            enableLightningStorm = true,
-            enableImpendingStorm = true,
-            enableStormBound = false,
-            enableBoulderStorm = true,
-            enableMinions = false,
-            enableBigQuake = false,
-            enableMotherClone = true,
-            enableCloneBlastOrigin = true,
-            enableRainOfWisps = false,
-            enableConjureAxe = true,
-            enableConjuredMines = false,
-            enableLevitateDown = true,
-            enableBoulder = true,
-            enableDummy = true,
-            enableSlam = true,
-        },
+BM.defaults = {
+    isAccountWide = true,
+
+    -- R, G, B, A
+    alertDodgeColour = {1, 1, 0, 1},
+    alertBlockColour = {1, 0, 0, 1},
+
+    AetherianArchive = {
+        enableLightningStorm = true,
+        enableImpendingStorm = true,
+        enableStormBound = false,
+        enableBoulderStorm = true,
+        enableMinions = false,
+        enableBigQuake = false,
+        enableMotherClone = true,
+        enableCloneBlastOrigin = true,
+        enableRainOfWisps = false,
+        enableConjureAxe = true,
+        enableConjuredMines = false,
+        enableLevitateDown = true,
+        enableBoulder = true,
+        enableDummy = true,
+        enableSlam = true,
     },
 }
 
 -- Local globals for faster reference
-local BM = BearMinimum
 local AM = GetAnimationManager() -- https://www.esoui.com/forums/showthread.php?t=1191
 local EM = GetEventManager()
 local WM = GetWindowManager()
@@ -42,7 +44,7 @@ local activeNotifications = {}
 local zoneIds = {
     -- [635] = BearMinimum_InitialiseDragonstarArena,
     -- [636] = BearMinimum_InitialiseHelRaCitadel,
-    [638] = BM.InitialiseAetherianArchive,
+    -- [638] = BM.InitialiseAetherianArchive,
     -- [639] = BearMinimum_InitialiseSanctumOphidia,
     -- [677] = BearMinimum_InitialiseMaelstromArena,
     -- [725] = BearMinimum_InitialiseMawOfLorkhaj,
@@ -97,6 +99,7 @@ local function NotificationFactory(objectPool, objectKey)
     local timeline = AM:CreateTimelineFromVirtual('BearMinimum_NotificationAnimations', notification)
     local slide = AM:CreateTimelineFromVirtual('BearMinimum_NotificationSlide', notification)
 
+    -- Auto release object handler
     timeline:SetHandler('OnStop', function()
         table.remove(activeNotifications, 1)
         BM.notificationPool:ReleaseObject(notification.key)
@@ -111,10 +114,11 @@ local function NotificationFactory(objectPool, objectKey)
 end
 
 local function AlertFactory(objectPool, objectKey)
-    local alert = WM:CreateControlFromVirtual('BearMinimum_Alert', BearMinimum_Alerts, 'BearMinimum_Alert', objectPool:GetNextControlId())
+    local alert = WM:CreateControlFromVirtual('BearMinimum_AlertTemplateControl', BearMinimum_Alerts, 'BearMinimum_AlertTemplateControl', objectPool:GetNextControlId())
     local colour = alert:GetNamedChild('_Colour')
     local timeline = AM:CreateTimelineFromVirtual('BearMinimum_AlertAnimation', colour)
 
+    -- Auto release object handler
     timeline:SetHandler('OnStop', function() BM.alertPool:ReleaseObject(alert.key) end)
 
     colour.timeline = timeline
@@ -128,7 +132,8 @@ local function OnCombatStateChanged(eventCode, inCombat)
         -- Player has entered combat
         if inCombat then
             isPlayerInCombat = true
-            local currentHealth, maxHealth, effectiveMaxHealth = GetUnitPower('boss1', -2) -- POWERTYPE_HEALTH
+            -- Max health is used to identify bosses language independent
+            local currentHealth, maxHealth = GetUnitPower('boss1', POWERTYPE_HEALTH)
 
             BearMinimum_StatusPanel:SetHidden(false)
             BM.callbackManager:FireCallbacks('OnCombatStateChanged', isPlayerInCombat, maxHealth)
@@ -149,6 +154,7 @@ end
 local function OnPlayerActivated(eventCode, initial)
     BM.statusPanelPool:ReleaseAllObjects()
     BM.notificationPool:ReleaseAllObjects()
+    BM.alertPool:ReleaseAllObjects()
 
     local zoneId = GetUnitWorldPosition('player')
     local initFunction = zoneIds[zoneId]
@@ -157,18 +163,16 @@ local function OnPlayerActivated(eventCode, initial)
 end
 
 local function RegisterEvents()
-    EM:RegisterForEvent(BM.name, 131436, OnCombatStateChanged)
-    EM:RegisterForEvent(BM.name, 589824, OnPlayerActivated)
+    EM:RegisterForEvent(BM.name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
+    EM:RegisterForEvent(BM.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
 end
 
 function BM:RegisterMechanicsForEvent(zoneName, mechanicTable)
     for abilityId, functionName in pairs(mechanicTable) do
         local eventNamespace = 'BearMinimum_' .. zoneName .. abilityId
 
-        -- EVENT_COMBAT_EVENT = 131107
-        -- REGISTER_FILTER_ABILITY_ID = 5
-        EM:RegisterForEvent(eventNamespace, 131107, functionName)
-        EM:AddFilterForEvent(eventNamespace, 131107, 5, abilityId)
+        EM:RegisterForEvent(eventNamespace, EVENT_COMBAT_EVENT, functionName)
+        EM:AddFilterForEvent(eventNamespace, EVENT_COMBAT_EVENT, REGISTER_FILTER_ABILITY_ID, abilityId)
     end
 end
 
@@ -199,19 +203,25 @@ end
 function BM:AddAlert(text, isDodgeable, duration)
     local object, objectKey = BM.alertPool:AcquireObject()
     local name = object:GetNamedChild('_Name')
-    local line = object:GetNamedChild('_Line')
+    local icon = object:GetNamedChild('_Icon')
+    local reactionLine = object:GetNamedChild('_ReactionLine')
     local colour = object:GetNamedChild('_Colour')
     local sizeAnimation = colour.timeline:GetFirstAnimation()
     local numActiveAlerts = #BM.alertPool.m_Active
 
     object.key = objectKey
-    line:SetAnchor(TOPLEFT, name, BOTTOMLEFT, 200 * (1 - 1000 / duration))
+    reactionLine:SetAnchor(LEFT, icon, RIGHT, 1 + 200 * (1 - 1000 / duration))
 
-    if numActiveAlerts > 1 then object:SetAnchor(TOPLEFT, BearMinimum_Alerts, nil, (numActiveAlerts - 1) * 300)
+    if numActiveAlerts > 1 then object:SetAnchor(TOPLEFT, BearMinimum_Alerts, nil, (numActiveAlerts - 1) * 250)
     else object:SetAnchor(TOPLEFT, BearMinimum_Alerts) end
 
-    if isDodgeable then colour:SetCenterColor(unpack(BM.sv.alertDodgeColour))
-    else colour:SetCenterColor(unpack(BM.sv.alertBlockColour)) end
+    if isDodgeable then
+        icon:SetTexture('esoui/art/icons/ability_armor_002.dds')
+        colour:SetCenterColor(unpack(BM.sv.alertDodgeColour))
+    else
+        icon:SetTexture('esoui/art/icons/ability_1handed_004.dds')
+        colour:SetCenterColor(unpack(BM.sv.alertBlockColour))
+    end
 
     name:SetText(text)
     sizeAnimation:SetDuration(duration)
@@ -221,7 +231,7 @@ end
 
 local function OnAddonLoaded(eventCode, addonName)
     if addonName == BM.name then
-        EM:UnregisterForEvent(BM.name, 65536)
+        EM:UnregisterForEvent(BM.name, eventCode)
 
         BM.sv = ZO_SavedVars:NewAccountWide(BM.svName, BM.svVersion, nil, BM.defaults)
         if not BM.sv.isAccountWide then BM.sv = ZO_SavedVars:NewCharacterIdSettings(BM.svName, BM.svVersion, nil, BM.defaults) end
@@ -241,4 +251,4 @@ local function OnAddonLoaded(eventCode, addonName)
     end
 end
 
-EM:RegisterForEvent(BM.name, 65536, OnAddonLoaded)
+EM:RegisterForEvent(BM.name, EVENT_ADD_ON_LOADED, OnAddonLoaded)

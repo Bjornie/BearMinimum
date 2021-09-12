@@ -24,7 +24,7 @@
 
         <AnimationTimeline name="BearMinimum_AlertAnimation">
             <Animations>
-                <SizeAnimation endHeight="50" endWidth="250" startHeight="50" />
+                <SizeAnimation endHeight="32" endWidth="200" startHeight="32" />
             </Animations>
         </AnimationTimeline>
     </Animations>
@@ -43,7 +43,7 @@
         </Control>
 
         <TopLevelControl name="BearMinimum_StatusPanel" clampedToScreen="true" hidden="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
-            <Anchor point="TOPLEFT" offsetX="100" offsetY="100" />
+            <Anchor point="TOPLEFT" offsetX="200" offsetY="200" />
             <Controls>
                 <Label name="$(parent)_Header" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick" text="|c00BFFFBear Minimum|r |cFFFACDStatus Panel|r">
                     <Anchor point="TOPLEFT" />
@@ -61,26 +61,36 @@
             <Anchor point="TOP" offsetY="200" />
         </TopLevelControl>
 
-        <Control name="BearMinimum_Alert" hidden="false" virtual="true">
+        <Control name="BearMinimum_AlertTemplateControl" hidden="false" virtual="true">
             <Controls>
                 <Label name="$(parent)_Name" color="FFFFFF" font="esoui/common/fonts/Univers67.otf|20|shadow">
                     <Anchor point="TOPLEFT" />
                 </Label>
                 <Backdrop name="$(parent)_Background" centerColor="80000000" layer="0">
                     <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$(parent)_Name" />
-                    <Dimensions x="250" y="50" />
+                    <Dimensions x="235" y="34" />
                 </Backdrop>
-                <Backdrop name="$(parent)_Border" centerColor="00000000" edgeColor="FFFFFF" layer="2">
+                <Backdrop name="$(parent)_Border" centerColor="00000000" edgeColor="80FFFFFF" layer="2">
                     <Anchor point="TOPLEFT" relativeTo="$(parent)_Background" />
-                    <Dimensions x="250" y="50" />
+                    <Dimensions x="235" y="34" />
                     <Edge edgeSize="1px" />
                 </Backdrop>
-                <Backdrop name="$(parent)_Line" centerColor="FFFFFF" layer="2">
-                    <Dimensions x="2" y="50" />
+                <Texture name="$(parent)_Icon" layer="1">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)_Background" offsetX="1px  " offsetY="1px" />
+                    <Dimensions x="32" y="32" />
+                </Texture>
+                <!-- centerColor="00000000" ? -->
+                <!-- edgeSize="1px" ? -->
+                <Backdrop name="$(parent)_IconRightBorder" edgeColor="80FFFFFF" layer="2">
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)_Icon" />
+                    <Dimensions x="1px" y="32" />
+                </Backdrop>
+                <Backdrop name="$(parent)_ReactionLine" edgeColor="80FFFFFF" layer="2">
+                    <Dimensions x="2px" y="32" />
                 </Backdrop>
                 <Backdrop name="$(parent)_Colour" layer="1">
-                    <Anchor point="LEFT" relativeTo="$(parent)_Background" />
-                    <Dimensions x="0" y="50" />
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)_IconRightBorder" />
+                    <Dimensions y="32" />
                 </Backdrop>
             </Controls>
         </Control>

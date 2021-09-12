@@ -1,3 +1,5 @@
+if not BearMinimum then BearMinimum = {} end
+
 local BM = BearMinimum
 local LAM = LibAddonMenu2
 
@@ -14,8 +16,26 @@ function BM:BuildMenu()
 
     local optionsTable = {
         {
+            type = 'header',
+            name = '|cc4c29eGeneral|r',
+        },
+        {
+            type = 'colorpicker',
+            name = 'Alert Dodgeable Attack Colour',
+            getFunc = function() return unpack(BM.sv.alertDodgeColour) end,
+            setFunc = function(r, g, b, a) BM.sv.alertDodgeColour = {r, g, b, a} end,
+            default = BM.defaults.alertDodgeColour,
+        },
+        {
+            type = 'colorpicker',
+            name = 'Alert Non-Dodgeable Attack Colour',
+            getFunc = function() return unpack(BM.sv.alertBlockColour) end,
+            setFunc = function(r, g, b, a) BM.sv.alertBlockColour = {r, g, b, a} end,
+            default = BM.defaults.alertBlockColour,
+        },
+        {
             type = 'submenu',
-            name = 'Aetherian Archive',
+            name = '|cc4c29eAetherian Archive|r',
             controls = {
                 {
                     type = 'header',
