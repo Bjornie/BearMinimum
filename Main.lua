@@ -13,7 +13,9 @@ BM.defaults = {
     alertDodgeColour = {1, 1, 0, 1},
     alertBlockColour = {1, 0, 0, 1},
 
-    AetherianArchive = {
+    dungeons = {},
+
+    aetherianArchive = {
         enableLightningStorm = true,
         enableImpendingStorm = true,
         enableStormBound = false,
