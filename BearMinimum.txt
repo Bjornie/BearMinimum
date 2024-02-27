@@ -1,10 +1,10 @@
 ## AddOnVersion: 1
-## APIVersion: 101031
+## APIVersion: 101040
 ## Author: |c00BFFFBjørn|r
 ## DependsOn: LibAddonMenu-2.0
 ## SavedVariables: BearMinimumSV
 ## Title: Bear Minimum
-## Version: 0.3.0
+## Version: 0.4.0
 
 # This Add-on is not created by, affiliated with or sponsored by ZeniMax Media Inc. or its affiliates.
 # The Elder Scrolls® and related logos are registered trademarks or trademarks of
@@ -12,6 +12,5 @@
 
 Data.lua
 Handlers.lua
-Initialisation.lua
-Menu.lua
 UI.xml
+Initialisation.lua

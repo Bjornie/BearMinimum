@@ -1,8 +1,8 @@
-<GuiXml>
+<GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
     <Animations>
         <AnimationTimeline name="BearMinimum_NotificationFade">
             <Animations>
-                <AlphaAnimation delay="3000" duration="500" endAlpha="0" startAlpha="1" />
+                <AlphaAnimation delay="3000" duration="500" endAlpha="0" startAlpha="1"/>
             </Animations>
         </AnimationTimeline>
 
@@ -17,57 +17,8 @@
         </AnimationTimeline>
     </Animations>
 
+    <!-- TODO: Test if can be done without the usage of px -->
     <Controls>
-        <Control name="BearMinimum_Status" virtual="true">
-            <Controls>
-                <Label name="$(parent)_Name" color="ffffff" font="esoui/common/fonts/Univers57.otf|30|soft-shadow-thick">
-                    <Anchor point="TOPLEFT" />
-                    <Dimensions x="300" />
-                </Label>
-                <Label name="$(parent)_Timer" color="ffffff" font="esoui/common/fonts/Univers57.otf|30|soft-shadow-thick" text="READY">
-                    <Anchor point="RIGHT" relativePoint="RIGHT" relativeTo="$(parent)_Name" offsetX="40" />
-                </Label>
-            </Controls>
-        </Control>
-
-        <TopLevelControl name="BearMinimum_StatusPanel" clampedToScreen="true" hidden="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
-            <Anchor point="TOPLEFT" offsetX="200" offsetY="200" />
-            <Controls>
-                <Label name="$(parent)_Header" font="esoui/common/fonts/Univers57.otf|30|soft-shadow-thick" text="|c00BFFFBear Minimum|r |cC4C29EStatusPanel|r">
-                    <Anchor point="TOPLEFT" />
-                </Label>
-                <Texture name="$(parent)_Divider" textureFile="EsoUI/Art/Miscellaneous/horizontaldivider_dynamic.dds">
-                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$(parent)_Header" offsetY="-4" />
-                    <Dimensions x="340" y="8" />
-                </Texture>
-            </Controls>
-            <OnMoveStop>
-                BearMinimum.StatusOnMoveStop()
-            </OnMoveStop>
-        </TopLevelControl>
-
-        <Label name="BearMinimum_Notification" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick" virtual="true" />
-
-        <TopLevelControl name="BearMinimum_Notifications" clampedToScreen="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
-            <Anchor point="TOP" offsetY="200" />
-            <Controls>
-                <Control name="$(parent)_Count" hidden="true">
-                    <Anchor point="TOP" />
-                    <Controls>
-                        <Label name="$(parent)_Text" font="esoui/common/fonts/Univers67.otf|45|soft-shadow-thick">
-                            <Anchor point="TOP" />
-                        </Label>
-                        <Label name="$(parent)_Timer" font="esoui/common/fonts/Univers67.otf|60|soft-shadow-thick">
-                            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$(parent)_Text" />
-                        </Label>
-                    </Controls>
-                </Control>
-            </Controls>
-            <OnMoveStop>
-                BearMinimum.NotificationOnMoveStop()
-            </OnMoveStop>
-        </TopLevelControl>
-
         <Control name="BearMinimum_Alert" resizeToFitDescendents="true" virtual="true">
             <Controls>
                 <Label name="$(parent)_Name" color="ffffff" font="esoui/common/fonts/Univers67.otf|20|shadow">
@@ -93,17 +44,58 @@
                 <Texture name="$(parent)_ReactionLine" color="80ffffff" layer="1">
                     <Dimensions x="2px" y="25px" />
                 </Texture>
-                <Texture name="$(parent)_Colour" layer="0">
+                <Texture name="$(parent)_AnimationBar" layer="0">
                     <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)_IconRightBorder" />
                 </Texture>
             </Controls>
         </Control>
 
-        <TopLevelControl name="BearMinimum_Alerts" clampedToScreen="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
+        <TopLevelControl name="BearMinimum_AlertsContainer" clampedToScreen="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
             <Anchor point="CENTER" offsetY="-100" />
-            <OnMoveStop>
-                BearMinimum.AlertOnMoveStop()
-            </OnMoveStop>
+        </TopLevelControl>
+
+        <Control name="BearMinimum_Status" resizeToFitDescendents="true" virtual="true">
+            <Controls>
+                <Label name="$(parent)_Name" color="ffffff" font="esoui/common/fonts/Univers57.otf|30|soft-shadow-thick">
+                    <Anchor point="TOPLEFT" />
+                    <Dimensions x="300" />
+                </Label>
+                <Label name="$(parent)_Timer" color="ffffff" font="esoui/common/fonts/Univers57.otf|30|soft-shadow-thick" text="READY">
+                    <Anchor point="RIGHT" relativePoint="RIGHT" relativeTo="$(parent)_Name" offsetX="40" />
+                </Label>
+            </Controls>
+        </Control>
+
+        <TopLevelControl name="BearMinimum_StatusPanel" clampedToScreen="true" hidden="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
+            <Anchor point="TOPLEFT" offsetX="200" offsetY="200" />
+            <Controls>
+                <Label name="$(parent)_Header" font="esoui/common/fonts/Univers57.otf|30|soft-shadow-thick" text="|c00BFFFBear Minimum|r |cC4C29EStatusPanel|r">
+                    <Anchor point="TOPLEFT" />
+                </Label>
+                <Texture name="$(parent)_Divider" textureFile="EsoUI/Art/Miscellaneous/horizontaldivider_dynamic.dds">
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$(parent)_Header" offsetY="-4" />
+                    <Dimensions x="340" y="8" />
+                </Texture>
+            </Controls>
+        </TopLevelControl>
+
+        <Label name="BearMinimum_Notification" font="esoui/common/fonts/Univers67.otf|30|soft-shadow-thick" virtual="true" />
+
+        <TopLevelControl name="BearMinimum_NotificationsContainer" clampedToScreen="true" mouseEnabled="false" movable="false" resizeToFitDescendents="true">
+            <Anchor point="TOP" offsetY="200" />
+            <Controls>
+                <Control name="$(parent)_Count" hidden="true" resizeToFitDescendents="true">
+                    <Anchor point="TOP" />
+                    <Controls>
+                        <Label name="$(parent)_Text" font="esoui/common/fonts/Univers67.otf|45|soft-shadow-thick">
+                            <Anchor point="TOP" />
+                        </Label>
+                        <Label name="$(parent)_Timer" font="esoui/common/fonts/Univers67.otf|60|soft-shadow-thick">
+                            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$(parent)_Text" />
+                        </Label>
+                    </Controls>
+                </Control>
+            </Controls>
         </TopLevelControl>
     </Controls>
 </GuiXml>
