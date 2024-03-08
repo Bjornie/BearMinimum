@@ -13,13 +13,10 @@ local function AlertFactory(objectPool, objectKey)
     alert.iconRightBorder = alert:GetNamedChild('_IconRightBorder')
     alert.reactionLine = alert:GetNamedChild('_ReactionLine')
     alert.animationBar = alert:GetNamedChild('_AnimationBar')
-
-    -- Animations do not accept meassurement units in pixels so we do a little workaround
     alert.timeline = aniMgr:CreateTimeline()
     local sizeAnimation = alert.timeline:InsertAnimation(ANIMATION_SIZE, alert.animationBar)
-    local sizeHeight = alert.icon:GetHeight()
-    sizeAnimation:SetStartAndEndHeight(sizeHeight, sizeHeight)
-    sizeAnimation:SetEndWidth(6 * sizeHeight) -- Easiest way I've found to get the 'pixel width' in ui units
+    sizeAnimation:SetStartAndEndHeight(35, 35)
+    sizeAnimation:SetEndWidth(200)
 
     -- Auto handle object release
     alert.timeline:SetHandler('OnStop', function() objectPool:ReleaseObject(objectKey) end)
@@ -27,7 +24,6 @@ local function AlertFactory(objectPool, objectKey)
     return alert
 end
 
--- TODO: identifier
 local function StatusFactory(objectPool, objectKey)
     local id = objectPool:GetNextControlId()
     local status = winMgr:CreateControlFromVirtual('BearMinimum_Status', BearMinimum_StatusPanel, 'BearMinimum_Status', id)
@@ -35,22 +31,6 @@ local function StatusFactory(objectPool, objectKey)
     status.timer = status:GetNamedChild('_Timer')
 
     return status
-end
-
--- Notification anchors are hooked to the bottom of each other,
--- so it is only necessary to transition the oldest (topmost) notification
--- to move all active notifications
-local function TransitionActiveNotifications()
-    local oldestNotification = bearMin.notificationPool.activeNotifications[1]
-    local isCountHidden = BearMinimum_NotificationsContainer_Count:IsHidden()
-    local relativeAnchor = not isCountHidden and BearMinimum_NotificationsContainer_Count or BearMinimum_NotificationsContainer
-    local destination = not isCountHidden and BearMinimum_NotificationsContainer_Count:GetBottom() or BearMinimum_NotificationsContainer:GetTop()
-    local distanceFromDestination = oldestNotification:GetTop() - destination
-    local translate = oldestNotification.slide:GetFirstAnimation()
-
-    oldestNotification:SetAnchor(TOP, relativeAnchor, isCountHidden and TOP or BOTTOM, 0, distanceFromDestination)
-    translate:SetDeltaOffsetY(-distanceFromDestination)
-    oldestNotification.slide:PlayFromStart()
 end
 
 local function NotificationFactory(objectPool, objectKey)
@@ -63,13 +43,14 @@ local function NotificationFactory(objectPool, objectKey)
         table.insert(objectPool.activeNotifications, notification)
         notification:SetAlpha(1)
     end)
+
     -- Auto handle object release
     notification.fade:SetHandler('OnStop', function()
         objectPool:ReleaseObject(objectKey)
         table.remove(objectPool.activeNotifications, 1)
         
         if #objectPool.activeNotifications > 0 then
-            TransitionActiveNotifications()
+            bearMin.TransitionActiveNotifications()
         end
     end)
 
@@ -90,6 +71,22 @@ local function OnPlayerActivated(eventCode, initial)
     data = bearMin.abilityData[activeZone]
 
     if data then bearMin.InitialiseZone(data) end
+end
+
+-- Notification anchors are hooked to the bottom of each other,
+-- so it is only necessary to transition the oldest (topmost) notification
+-- to move all active notifications
+function bearMin.TransitionActiveNotifications()
+    local oldestNotification = bearMin.notificationPool.activeNotifications[1]
+    local isCountHidden = BearMinimum_NotificationsContainer_Count:IsHidden()
+    local relativeAnchor = not isCountHidden and BearMinimum_NotificationsContainer_Count or BearMinimum_NotificationsContainer
+    local destination = not isCountHidden and BearMinimum_NotificationsContainer_Count:GetBottom() or BearMinimum_NotificationsContainer:GetTop()
+    local distanceFromDestination = oldestNotification:GetTop() - destination
+    local translate = oldestNotification.slide:GetFirstAnimation()
+
+    oldestNotification:SetAnchor(TOP, relativeAnchor, isCountHidden and TOP or BOTTOM, 0, distanceFromDestination)
+    translate:SetDeltaOffsetY(-distanceFromDestination)
+    oldestNotification.slide:PlayFromStart()
 end
 
 local function OnAddonLoaded(eventCode, addonName)

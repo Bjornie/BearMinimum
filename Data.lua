@@ -43,6 +43,8 @@ BearMinimum = {
 
     abilityData = {},
 
+    statusData = {},
+
     testData = {
         count = {type = 3, text = 'This is a test countdown', startTime = 5, endTime = 0, increment = -1},
         noti = {type = 2, text = 'This is a test notification'},
